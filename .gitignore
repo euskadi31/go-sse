@@ -1,0 +1,10 @@
+.DS_Store
+*.out
+
+vendor/
+coverage/
+
+sse-server
+!cmd/sse-server
+
+*.swp
