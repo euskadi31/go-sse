@@ -1,5 +1,12 @@
-Server Sent Events for Go
+Server Sent Events for Go [![Last release](https://img.shields.io/github/release/euskadi31/go-sse.svg)](https://github.com/euskadi31/go-sse/releases/latest) [![Documentation](https://godoc.org/github.com/euskadi31/go-sse?status.svg)](https://godoc.org/github.com/euskadi31/go-sse)
 =========================
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/euskadi31/go-sse)](https://goreportcard.com/report/github.com/euskadi31/go-sse)
+
+| Branch  | Status | Coverage |
+|---------|--------|----------|
+| master  | [![Build Status](https://img.shields.io/travis/euskadi31/go-sse/master.svg)](https://travis-ci.org/euskadi31/go-sse) | [![Coveralls](https://img.shields.io/coveralls/euskadi31/go-sse/master.svg)](https://coveralls.io/github/euskadi31/go-sse?branch=master) |
+
 
 Golang Server Sent Events server
 

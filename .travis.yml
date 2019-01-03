@@ -3,10 +3,11 @@ language: go
 sudo: required
 dist: trusty
 
+env:
+  - GO111MODULE=on
+
 go:
-  - 1.7
-  - 1.8
-  - 1.9
+  - 1.11.x
   - master
   - tip
 
@@ -19,14 +20,10 @@ matrix:
 cache: apt
 
 install:
-  - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
-  - go get github.com/stretchr/testify/assert
 
 script:
-  - make travis
-  - goveralls -service=travis-ci
+  - make test
 
-#deploy:
-#  on:
-#    condition: $TRAVIS_GO_VERSION =~ ^1\.8\.[0-9]+$
+after_success:
+  - goveralls -coverprofile=coverage.out -service=travis-ci

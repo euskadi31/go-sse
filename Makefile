@@ -1,8 +1,8 @@
-.PHONY: all clean fmt vet test cover bench release
+.PHONY: all clean test cover release over-html
 
-EXECUTABLE ?= sse-server
-PACKAGES = $(shell go list ./... | grep -v vendor)
+BUILD=build
 
+.PHONY: release
 release:
 	@echo "Release v$(version)"
 	@git pull
@@ -14,39 +14,58 @@ release:
 	@git checkout develop
 	@echo "Release v$(version) finished."
 
-all: test
 
+.PHONY: all
+all: coverage.out
+
+coverage.out: $(shell find . -type f -print | grep -v vendor | grep "\.go")
+	@CGO_ENABLED=0 go test -cover -covermode=count -coverprofile ./coverage.out.tmp ./...
+	@cat ./coverage.out.tmp | grep -v '.pb.go' | grep -v 'mock_' > ./coverage.out
+	@rm ./coverage.out.tmp
+
+.PHONY: test
+test: coverage.out
+
+.PHONY: cover
+cover: coverage.out
+	@echo ""
+	@go tool cover -func ./coverage.out
+
+.PHONY: cover-html
+cover-html: coverage.out
+	@go tool cover -html=./coverage.out
+
+.PHONY: benchmark
+benchmark:
+	@go test -bench=. ./...
+
+.PHONY: clean
 clean:
+	@rm ./coverage.out
 	@go clean -i ./...
 
-fmt:
-	@go fmt $(PACKAGES)
 
-vet:
-	@go vet $(PACKAGES)
+.PHONY: generate
+generate:
+	@CGO_ENABLED=0 go generate ./...
 
-test:
-	@for PKG in $(PACKAGES); do go test -cover -coverprofile $$GOPATH/src/$$PKG/coverage.out $$PKG || exit 1; done;
 
-travis:
-	@for PKG in $(PACKAGES); do go test -ldflags '-s -w $(LDFLAGS)' -cover -covermode=count -coverprofile $$GOPATH/src/$$PKG/coverage.out $$PKG || exit 1; done;
+.PHONY: lint
+lint:
+	@golangci-lint run ./...
 
-cover: test
-	@echo ""
-	@mkdir -p coverage/
-	@echo "mode: set" > ./coverage/test.cov
-	@for PKG in $(PACKAGES); do if [ -f $$GOPATH/src/$$PKG/coverage.out ]; then tail -q -n +2 $$GOPATH/src/$$PKG/coverage.out >> ./coverage/test.cov; fi; done;
-	@go tool cover -func ./coverage/test.cov
-	#@go tool cover -html=./coverage/test.cov
+${BUILD}/sse-server: $(shell find . -type f -print | grep -v vendor | grep "\.go")
+	@echo "Building sse-server..."
+	@go generate ./cmd/sse-server/
+	@go build -o $@ ./cmd/sse-server/
 
-bench:
-	@for PKG in $(PACKAGES); do go test -bench=. $$PKG || exit 1; done;
+.PHONY: run-sse-server
+run-sse-server: ${BUILD}/sse-server
+	@echo "Running sse-server..."
+	@./$<
 
-$(EXECUTABLE): $(shell find . -type f -print | grep -v vendor | grep "\.go")
-	@echo "Building $(EXECUTABLE)..."
-	@go build ./cmd/sse-server
+.PHONY: build
+build: ${BUILD}/sse-server
 
-build: $(EXECUTABLE)
-
-run: build
-	@./$(EXECUTABLE)
+.PHONY: run
+run: run-sse-server

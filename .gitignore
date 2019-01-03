@@ -8,3 +8,5 @@ sse-server
 !cmd/sse-server
 
 *.swp
+
+build/
