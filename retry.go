@@ -7,7 +7,6 @@ package sse
 import (
 	"bytes"
 	"errors"
-	"log"
 	"strconv"
 	"time"
 )
@@ -31,8 +30,6 @@ func (r Retry) MarshalEvent() ([]byte, error) {
 	buffer.WriteString("retry: ")
 	buffer.WriteString(strconv.Itoa(int(r.Duration / time.Millisecond)))
 	buffer.WriteString("\r\n")
-
-	log.Println(buffer.String())
 
 	return buffer.Bytes(), nil
 }

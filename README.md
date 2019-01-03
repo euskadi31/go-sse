@@ -31,7 +31,7 @@ func main() {
 		tickChan := time.NewTicker(time.Second * 2).C
 
 		// recovery
-		lastID := r.Header.Get("Last-Event-ID")
+		lastID := r.Header.Get(sse.LastEventID)
 		if lastID != "" {
 			log.Printf("Recovery with ID: %s\n", lastID)
 		}
@@ -47,7 +47,7 @@ func main() {
 					ID:   strconv.Itoa(int(t.Unix())),
 					Data: []byte(eventString),
 				})
-			case <-rw.CloseNotify:
+			case <-r.Context().Done():
 				log.Println("Done")
 
 				return
