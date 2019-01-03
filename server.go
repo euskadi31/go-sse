@@ -26,7 +26,7 @@ func (rw *ResponseWriter) Send(data EventMarshaler) {
 
 	fmt.Fprintf(rw, "%s\n", b)
 
-	// Flush the data immediatly instead of buffering it for later.
+	// Flush the data immediately instead of buffering it for later.
 	rw.flusher.Flush()
 }
 
