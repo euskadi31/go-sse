@@ -70,8 +70,6 @@ func (s *Server) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Connection", "keep-alive")
 	rw.Header().Set("Access-Control-Allow-Origin", "*")
 
-	notify := rw.(http.CloseNotifier).CloseNotify()
-
 	response := ResponseWriter{
 		ResponseWriter: rw,
 		flusher:        flusher,
@@ -79,8 +77,11 @@ func (s *Server) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	go func() {
-		<-notify
-		response.CloseNotify <- true
+		select {
+		case <-r.Context().Done():
+			response.CloseNotify <- true
+		default:
+		}
 	}()
 
 	if s.retryInterval > 0 {
