@@ -52,7 +52,7 @@ generate:
 
 .PHONY: lint
 lint:
-	@golangci-lint run ./...
+	@CGO_ENABLED=0 golangci-lint run ./...
 
 ${BUILD}/sse-server: $(shell find . -type f -print | grep -v vendor | grep "\.go")
 	@echo "Building sse-server..."

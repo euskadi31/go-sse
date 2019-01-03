@@ -35,7 +35,7 @@ func main() {
 					ID:   strconv.Itoa(int(t.Unix())),
 					Data: []byte(eventString),
 				})
-			case <-rw.CloseNotify:
+			case <-r.Context().Done():
 				log.Println("Done")
 
 				return

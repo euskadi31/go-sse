@@ -5,30 +5,12 @@
 package sse
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 )
 
-// ResponseWriter struct
-type ResponseWriter struct {
-	http.ResponseWriter
-	flusher     http.Flusher
-	CloseNotify chan bool
-}
-
-// Send data to client
-func (rw *ResponseWriter) Send(data EventMarshaler) {
-	b, err := data.MarshalEvent()
-	if err != nil {
-		return
-	}
-
-	fmt.Fprintf(rw, "%s\n", b)
-
-	// Flush the data immediately instead of buffering it for later.
-	rw.flusher.Flush()
-}
+// LastEventID header
+const LastEventID = "Last-Event-ID"
 
 // HandlerFunc type
 type HandlerFunc func(ResponseWriter, *http.Request)
@@ -73,16 +55,7 @@ func (s *Server) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	response := ResponseWriter{
 		ResponseWriter: rw,
 		flusher:        flusher,
-		CloseNotify:    make(chan bool),
 	}
-
-	go func() {
-		select {
-		case <-r.Context().Done():
-			response.CloseNotify <- true
-		default:
-		}
-	}()
 
 	if s.retryInterval > 0 {
 		response.Send(&Retry{
