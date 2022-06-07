@@ -9,4 +9,5 @@ sse-server
 
 *.swp
 
+.vscode/
 build/
