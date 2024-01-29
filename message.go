@@ -9,10 +9,10 @@ import (
 	"errors"
 )
 
-// ErrMessageEmpty message
+// ErrMessageEmpty message.
 var ErrMessageEmpty = errors.New("message is empty")
 
-// MessageEvent struct
+// MessageEvent struct.
 type MessageEvent struct {
 	ID    string
 	Event string
@@ -39,7 +39,7 @@ func (m MessageEvent) MarshalEvent() ([]byte, error) {
 		buffer.WriteString("\r\n")
 	}
 
-	data := bytes.Replace(m.Data, []byte("\r"), []byte(""), -1)
+	data := bytes.ReplaceAll(m.Data, []byte("\r"), []byte(""))
 	lines := bytes.Split(data, []byte("\n"))
 
 	for _, line := range lines {

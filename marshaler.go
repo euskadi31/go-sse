@@ -4,7 +4,7 @@
 
 package sse
 
-// EventMarshaler interface
+// EventMarshaler interface.
 type EventMarshaler interface {
 	MarshalEvent() ([]byte, error)
 }

@@ -11,10 +11,10 @@ import (
 	"time"
 )
 
-// ErrDurationEmpty message
+// ErrDurationEmpty message.
 var ErrDurationEmpty = errors.New("duration is empty")
 
-// Retry struct
+// Retry struct.
 type Retry struct {
 	Duration time.Duration
 }

@@ -9,13 +9,13 @@ import (
 	"net/http"
 )
 
-// ResponseWriter struct
+// ResponseWriter struct.
 type ResponseWriter struct {
 	http.ResponseWriter
 	flusher http.Flusher
 }
 
-// Send data to client
+// Send data to client.
 func (rw *ResponseWriter) Send(data EventMarshaler) {
 	b, err := data.MarshalEvent()
 	if err != nil {

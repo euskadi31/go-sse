@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-// LastEventID header
+// LastEventID header.
 const LastEventID = "Last-Event-ID"
 
-// HandlerFunc type
+// HandlerFunc type.
 type HandlerFunc func(ResponseWriter, *http.Request)
 
 // ServeHTTP calls f(w, r).
@@ -20,20 +20,20 @@ func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *http.Request) {
 	f(w, r)
 }
 
-// Server struct
+// Server struct.
 type Server struct {
 	handle        HandlerFunc
 	retryInterval time.Duration
 }
 
-// NewServer constructor
+// NewServer constructor.
 func NewServer(handle HandlerFunc) *Server {
 	return &Server{
 		handle: handle,
 	}
 }
 
-// SetRetry duration
+// SetRetry duration.
 func (s *Server) SetRetry(duration time.Duration) {
 	s.retryInterval = duration
 }

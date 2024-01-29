@@ -47,5 +47,6 @@ func main() {
 
 	http.Handle("/events", serve)
 
+	//nolint: gosec
 	log.Panic(http.ListenAndServe(":1337", nil))
 }
